@@ -19,7 +19,7 @@ module.exports = {
                 vendor: {
                     test: /node_modules/,
                     chunks: 'initial',
-                    minChunks: 5,
+                    minChunks: 1,
                     name: 'vendor'
                 }
             }

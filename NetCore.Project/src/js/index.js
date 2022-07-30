@@ -10,6 +10,7 @@ import vueFilePond from "vue-filepond";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 
+
 // Import FilePond plugins
 // Please note that you need to install these plugins separately
 
