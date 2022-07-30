@@ -86,7 +86,7 @@ namespace NetCore.Project.Controllers
 
         // POST: api/TodoFiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("{id}")]
+        [HttpPost("{id}/list")]
         public async Task<ActionResult<TodoFile>> PostTodoFile(int id, List<IFormFile> files)
         {
             var filePath = Path.Combine("File");
@@ -94,7 +94,7 @@ namespace NetCore.Project.Controllers
             foreach (var file in files)
             {
                 var url = await _fileService.Upload(filePath, file);
-                fileList.Add(new TodoFile { Url = url });
+                fileList.Add(new TodoFile { Url = file.FileName });
             }
 
             _context.TodoFile.AddRange(fileList);
@@ -103,25 +103,40 @@ namespace NetCore.Project.Controllers
             return Ok();
         }
 
-        //// DELETE: api/TodoFiles/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteTodoFile(int id)
-        //{
-        //    if (_context.TodoFile == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var todoFile = await _context.TodoFile.FindAsync(id);
-        //    if (todoFile == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost("{id}")]
+        public async Task<ActionResult<TodoFile>> PostTodoFile(int id, IFormFile filepond)
+        {
+            var filePath = Path.Combine("File");
+            var fileList = new List<TodoFile>();
 
-        //    _context.TodoFile.Remove(todoFile);
-        //    await _context.SaveChangesAsync();
+            var url = await _fileService.Upload(filePath, filepond);
+            fileList.Add(new TodoFile { Url = filepond.FileName });
 
-        //    return NoContent();
-        //}
+            _context.TodoFile.AddRange(fileList);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // DELETE: api/TodoFiles/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoFile(int id)
+        {
+            if (_context.TodoFile == null)
+            {
+                return NotFound();
+            }
+            var todoFile = await _context.TodoFile.FindAsync(id);
+            if (todoFile == null)
+            {
+                return NotFound();
+            }
+
+            _context.TodoFile.Remove(todoFile);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
         private bool TodoFileExists(int id)
         {

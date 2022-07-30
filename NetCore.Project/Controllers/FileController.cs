@@ -38,7 +38,7 @@ namespace NetCore.Project.Controllers
         [HttpGet("{fileName}")]
         public async Task<IActionResult> GetReconnaissanceRecordFile(string fileName)
         {
-            var filePath = Path.Combine("Files", fileName);
+            var filePath = Path.Combine("File", fileName);
 
             try
             {
