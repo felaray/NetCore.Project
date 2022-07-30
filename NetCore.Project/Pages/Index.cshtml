@@ -6,8 +6,34 @@
 @section Scripts{
     <script src="~/dist/js/index.js?ver=2022061301"></script>
 }
-<div class="text-center" id="app">
+<div class="text-center">
     <h1 class="display-4">Welcome {{name}} </h1>
     <p>現在時間 @DateTime.Now</p>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @* <div v-for="item in imgs">
+    {{item}}
+    <img :src="'api/'+item.url">
+    </div> *@
+
+    <file-pond
+      label-idle="Drop files here..."
+      v-bind:allow-multiple="true"
+      accepted-file-types="image/jpeg, image/png"
+      server="/api/Todoes/123"
+      v-bind:files="myFiles"
+      v-on:init="handleFilePondInit"
+    />
+
+    @* <file-pond
+      label-idle="Drop files here..."
+      v-bind:allow-multiple="true"
+      accepted-file-types="image/jpeg, image/png"
+      server="/api/Todoes/123"
+      v-bind:files="myFiles"
+      v-on:init="handleFilePondInit"
+    /> *@
 </div>
+
+
+

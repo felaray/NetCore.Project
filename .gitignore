@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /NetCore.Project/wwwroot/dist/js
 /NetCore.Project/package-lock.json
+/NetCore.Project/Files
+/NetCore.Project/File
+/NetCore.Project/Properties
+/NetCore.Project/wwwroot/dist/css

@@ -1,4 +1,7 @@
-﻿using NetCore.Project.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NetCore.Project.Data;
+using NetCore.Project.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,9 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
+//builder.Services.AddDbContext<DBContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
+builder.Services.AddDbContext<DBContext>(options => options.UseInMemoryDatabase(databaseName: "DBContext"));
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<IFileService, FileService>();
 
 var app = builder.Build();
 
@@ -35,7 +43,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapRazorPages();
-
-app.MapTodoEndpoints();
 
 app.Run();
