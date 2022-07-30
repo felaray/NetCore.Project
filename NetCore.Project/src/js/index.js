@@ -5,7 +5,7 @@ import bootstrap from "bootstrap";
 import axios from "axios";
 
 // Import Vue FilePond
-import vueFilePond from "vue-filepond";
+import vueFilePond, { setOptions } from 'vue-filepond';
 
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
@@ -27,6 +27,20 @@ const FilePond = vueFilePond(
   FilePondPluginImagePreview
 );
 
+setOptions({
+    server: { 
+        remove: (source, load, error) => {
+            console.log(source);
+            // Should somehow send `source` to server so server can remove the file with this source
+
+            // Can call the error method if something is wrong, should exit after
+            error('oh my goodness');
+
+            // Should call the load method when done, no parameters required
+            load();
+        },
+    }
+});
 
 new Vue({
     el: "#app",
@@ -40,10 +54,15 @@ new Vue({
             myFiles:[]
         }
     },
+    computed: {
+        imgsUri() {
+            return this.imgs.map(c=>'api/file/'+c.url); 
+        }
+    },
     methods: {
         handleFilePondInit: function () {
             console.log("FilePond has initialized");
-      
+            this.$refs.pond.getFiles();
             // FilePond instance methods are available on `this.$refs.pond`
           },
         getFile(){
@@ -51,7 +70,12 @@ new Vue({
             axios.get(url).then(r=>{
                 this.imgs= r.data;
             })
-        }
+        },
+        handleFilePondAdd:function (e) {
+            console.log(e);
+            this.$refs.pond.getFiles();
+            // FilePond instance methods are available on `this.$refs.pond`
+          },
     },
     async created() {
 
