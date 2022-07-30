@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     entry: {
-        login: "./js/Sample.js"
+        index: "./js/index.js"
     },
     output: {
         path: path.resolve(process.cwd(), 'wwwroot/dist'),

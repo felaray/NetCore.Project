@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/NetCore.Project/wwwroot/dist/js
+/NetCore.Project/package-lock.json

@@ -1,20 +1,38 @@
 ﻿"use strict";
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 const miniCssExtractPlugin = require("mini-css-extract-plugin");
+const VueLoaderPlugin = require('vue-loader');
 const TerserJSPlugin = require("terser-webpack-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = merge(common, {
     mode: 'production',
     devtool: false,
     module: {
         rules: [
             {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            {
                 test: /\.(js)$/,
-                use: ['babel-loader'],
-                exclude: /node_modules/
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env'],
+                        plugins: [
+                            [
+                                "@babel/plugin-transform-runtime",
+                                {
+                                    "corejs": false,
+                                    "helpers": false,
+                                    "regenerator": true
+                                }
+                            ]
+                        ]
+                    }
+                },
             },
             {
                 test: /\.(sa|sc|c)ss$/,
@@ -43,13 +61,22 @@ module.exports = merge(common, {
     },
     optimization: {
         minimizer: [
-            new TerserJSPlugin({}),
-            new OptimizeCSSAssetsPlugin({})
+            new TerserJSPlugin({})
         ]
     },
     plugins: [
         new miniCssExtractPlugin({
-            filename: './css/[name].css'
+            filename: './css/[name].css',
+            ignoreOrder: true
+        }),
+        new VueLoaderPlugin.VueLoaderPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'images', to: 'images' }
+            ],
+            options: {
+                concurrency: 100
+            }
         }),
         new CleanWebpackPlugin()
     ],
@@ -57,10 +84,9 @@ module.exports = merge(common, {
         alias: {
             'jquery': 'jquery/dist/jquery.min.js',
             'bootstrap': 'bootstrap/dist/js/bootstrap.bundle.min.js',
-            'moment': 'moment/min/moment.min.js',
             'vue': 'vue/dist/vue.min.js',
-            'sweetalert': 'sweetalert/dist/sweetalert.min.js',
-            'pyramiusjs': 'pyramiusjs/pyramius.js'
+            // 'sweetalert': 'sweetalert/dist/sweetalert.min.js',
+            // 'pyramiusjs': 'pyramiusjs/pyramius.js'
         }
     }
 });
