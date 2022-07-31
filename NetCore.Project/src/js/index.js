@@ -28,18 +28,63 @@ const FilePond = vueFilePond(
 );
 
 setOptions({
-    server: { 
-        remove: (source, load, error) => {
-            console.log(source);
-            // Should somehow send `source` to server so server can remove the file with this source
+    server: {
+        url: "api/file/attachment/",
+        process: (fieldName, file, metadata, load, error, progress, abort) => {
+            console.log(123);
+            const formData = new FormData();
+            formData.append(fieldName, file, file.name);
+            formData.append("CaseID", 1123546);
 
-            // Can call the error method if something is wrong, should exit after
-            error('oh my goodness');
+            const request = new XMLHttpRequest();
+            var ApiUrl="api/file/attachment/";
+            request.open('POST', ApiUrl);
+            // Setting computable to false switches the loading indicator to infinite mode
+            request.upload.onprogress = (e) => {
+                progress(e.lengthComputable, e.loaded, e.total);
+            };
 
-            // Should call the load method when done, no parameters required
-            load();
-        },
-    }
+            request.onload = function () {
+            if (request.status >= 200 && request.status < 300) {
+                load(request.responseText);// the load method accepts either a string (id) or an object
+            }
+            else {
+                error('Error during Upload!');
+            }
+        };
+
+        request.send(formData);
+        //expose an abort method so the request can be cancelled
+        return {
+            abort: () => {
+                // This function is entered if the user has tapped the cancel button
+                request.abort();
+                // Let FilePond know the request has been cancelled
+                abort();
+            }
+        };
+        }, // we've not implemented these endpoints yet, so leave them null!
+        fetch: null,
+        remove: null,
+        load: "./",
+    },
+    remove: (source, load, error) => {
+        const request = new XMLHttpRequest();
+        request.open('DELETE', api);
+        // Setting computable to false switches the loading indicator to infinite mode
+        request.upload.onprogress = (e) => {
+            progress(e.lengthComputable, e.loaded, e.total);
+        };
+        request.onload = function () {
+            if (request.status >= 200 && request.status < 300) {
+                load();// the load method accepts either a string (id) or an object
+            }
+            else {
+                error('Error while removing file!');
+            }
+        }
+        request.send(source);
+    },
 });
 
 new Vue({
@@ -66,9 +111,21 @@ new Vue({
             // FilePond instance methods are available on `this.$refs.pond`
           },
         getFile(){
-            var url = "api/TodoFiles";
+            var url = "api/Attachments";
             axios.get(url).then(r=>{
                 this.imgs= r.data;
+
+                r.data.forEach(element => {
+                    var item =
+                    {
+                        source: element.guid,
+                        options: {
+                            type: 'local', // local to indicate an already uploaded file, so it hits the load endpoint
+                        }
+                    };
+                    this.myFiles.push(item);
+                });
+
             })
         },
         handleFilePondAdd:function (e) {

@@ -14,7 +14,6 @@ namespace NetCore.Project.Data
         {
         }
 
-        public DbSet<NetCore.Project.Models.Todo> Todo { get; set; } = default!;
-        public DbSet<NetCore.Project.Models.TodoFile> TodoFile { get; set; } = default!;
+        public DbSet<NetCore.Project.Models.Attachment> Attachment { get; set; } = default!;
     }
 }
