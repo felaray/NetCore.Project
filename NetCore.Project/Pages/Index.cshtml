@@ -15,12 +15,12 @@
     {{item}}
     <img :src="'api/'+item.url">
     </div> *@
-
+    <button type="button" class="btn btn-info" @@click="uploadFile">upload</button>
     <file-pond
       ref="pond"
       label-idle="Drop files here..."
       v-bind:allow-multiple="true"
-      accepted-file-types="image/jpeg, image/png"
+      accepted-file-types="image/jpeg, image/png,image/jpg"
       v-bind:files="myFiles"
       v-on:init="handleFilePondInit"
     />

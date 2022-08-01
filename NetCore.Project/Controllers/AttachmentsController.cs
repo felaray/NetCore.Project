@@ -21,6 +21,35 @@ namespace NetCore.Project.Controllers
             _context = context;
         }
 
+        // GET: api/Attachments
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Attachment>>> GetAttachment()
+        {
+          if (_context.Attachment == null)
+          {
+              return NotFound();
+          }
+            return await _context.Attachment.ToListAsync();
+        }
+
+        // GET: api/Attachments/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Attachment>> GetAttachment(int id)
+        {
+          if (_context.Attachment == null)
+          {
+              return NotFound();
+          }
+            var attachment = await _context.Attachment.FindAsync(id);
+
+            if (attachment == null)
+            {
+                return NotFound();
+            }
+
+            return attachment;
+        }
+
         // PUT: api/Attachments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

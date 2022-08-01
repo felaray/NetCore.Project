@@ -104,7 +104,7 @@ namespace NetCore.Project.Controllers
                 return NotFound("Load Error: File not found");
             }
 
-            var filePath = Path.Combine("File", attachment.FileName + "." + attachment.FileType);
+            var filePath = Path.Combine("Files", attachment.FileName + "." + attachment.FileType);
             var bytes = System.IO.File.ReadAllBytes(filePath);
             var provider = new FileExtensionContentTypeProvider();
             var contentType = "";
@@ -115,7 +115,11 @@ namespace NetCore.Project.Controllers
             return File(bytes, contentType, Path.GetFileName(filePath));
         }
 
-
+        [HttpPost]
+        public async Task<ActionResult> UploadList([FromForm] List<IFormFile> file)
+        {
+            return Ok(file);
+        }
     }
 
 
